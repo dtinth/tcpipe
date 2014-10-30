@@ -1,0 +1,33 @@
+#!/usr/bin/env node
+
+try {
+  var listen  = parseHost(process.argv[2])
+  var connect = parseHost(process.argv[3])
+} catch (e) {
+  console.error('Usage: $0 [<laddr>:]<lport> <caddr>:<cport>')
+  console.error('')
+  console.error('Examples:')
+  console.error('  $0 127.0.0.1:2222 169.254.123.45:22')
+  process.exit(1)
+}
+
+var main = require('../lib/main')
+main(listen, connect)
+
+function parseHost(str) {
+  var host = '0.0.0.0'
+  var port
+  var m
+  if ((m = str.match(/:(\d+)$/))) {
+    port = parseInt(m[1], 10)
+    host = str.replace(/:(\d+)$/, '') || '0.0.0.0'
+  } else {
+    port = parseInt(str, 10)
+    if (isNaN(port)) {
+      throw new Error('Unparsable data')
+    }
+  }
+  return [port, host]
+}
+
+
